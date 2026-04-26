@@ -1,0 +1,495 @@
+<style>
+  .jx { font-family: var(--font-sans); color: #1a1816; background: #f7f4ed; border-radius: var(--border-radius-md); overflow: hidden; }
+  .jx * { box-sizing: border-box; }
+  .jx a { text-decoration: none; color: inherit; }
+  .jx button { font-family: inherit; }
+
+  /* PAGES */
+  .jx-page { display: none; animation: pageIn .25s ease; }
+  .jx-page.active { display: block; }
+  @keyframes pageIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* NAV */
+  .jx-nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; border-bottom: 0.5px solid rgba(26,24,22,0.08); background: rgba(247,244,237,0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 50; }
+  .jx-logo { display: flex; align-items: center; gap: 9px; font-weight: 500; font-size: 15px; letter-spacing: -0.01em; color: #1a1816; cursor: pointer; }
+  .jx-logo-mark { width: 28px; height: 28px; background: #1a1816; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: #f7f4ed; font-weight: 500; font-size: 13px; }
+  .jx-navlinks { display: flex; gap: 8px; font-size: 13.5px; }
+  .jx-navlink { padding: 6px 12px; border-radius: 6px; color: #6b6660; transition: color .15s, background .15s; cursor: pointer; }
+  .jx-navlink:hover { color: #1a1816; background: rgba(26,24,22,0.04); }
+  .jx-navlink.active { color: #1a1816; background: rgba(26,24,22,0.06); }
+  .jx-cta { background: #1a1816; color: #f7f4ed; padding: 8px 14px; border-radius: 7px; font-size: 13px; font-weight: 500; transition: transform .15s, background .15s; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; }
+  .jx-cta:hover { transform: translateY(-1px); background: #2d2823; }
+  .jx-cta-arrow { transition: transform .2s; }
+  .jx-cta:hover .jx-cta-arrow { transform: translateX(2px); }
+  .jx-burger { display: none; background: none; border: none; padding: 6px; cursor: pointer; }
+  .jx-mobile-menu { display: none; padding: 8px 18px 14px; border-bottom: 0.5px solid rgba(26,24,22,0.08); background: #f7f4ed; }
+  .jx-mobile-menu.open { display: block; }
+  .jx-mobile-menu .jx-navlink { display: block; padding: 12px 0; border-bottom: 0.5px solid rgba(26,24,22,0.05); border-radius: 0; background: transparent; }
+  .jx-mobile-menu .jx-navlink:last-child { border-bottom: none; }
+
+  /* HERO */
+  .jx-hero { padding: 100px 24px 92px; text-align: center; position: relative; overflow: hidden; background: #f7f4ed; }
+  .jx-hero::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(26,24,22,0.06) 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 75%); pointer-events: none; }
+  .jx-hero-inner { position: relative; max-width: 720px; margin: 0 auto; }
+  .jx-badge { display: inline-flex; align-items: center; gap: 8px; background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.1); padding: 6px 13px; border-radius: 100px; font-size: 12px; color: #4a4640; margin-bottom: 28px; }
+  .jx-badge-dot { width: 6px; height: 6px; background: #b8855a; border-radius: 50%; box-shadow: 0 0 0 3px rgba(184,133,90,0.22); animation: pulse 2.2s infinite; }
+  @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 3px rgba(184,133,90,0.22); } 50% { box-shadow: 0 0 0 6px rgba(184,133,90,0); } }
+  .jx-h1 { font-size: 56px; font-weight: 500; line-height: 1.04; margin: 0 0 22px; letter-spacing: -0.035em; color: #1a1816; }
+  .jx-italic { font-family: var(--font-serif); font-style: italic; font-weight: 400; color: #6b6660; }
+  .jx-sub { font-size: 17px; color: #6b6660; max-width: 520px; margin: 0 auto 36px; line-height: 1.55; }
+  .jx-hero-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .jx-btn-primary { background: #1a1816; color: #f7f4ed; padding: 13px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; transition: transform .15s, background .15s; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; }
+  .jx-btn-primary:hover { transform: translateY(-1px); background: #2d2823; }
+  .jx-btn-ghost { background: transparent; color: #1a1816; padding: 13px 22px; border-radius: 8px; font-size: 14px; font-weight: 500; border: 0.5px solid rgba(26,24,22,0.18); transition: border-color .15s, transform .15s, background .15s; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+  .jx-btn-ghost:hover { border-color: rgba(26,24,22,0.45); background: rgba(26,24,22,0.03); transform: translateY(-1px); }
+
+  /* PILLARS */
+  .jx-pillars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin-top: 64px; padding-top: 32px; border-top: 0.5px solid rgba(26,24,22,0.08); }
+  .jx-pillar { padding: 0 16px; border-right: 0.5px solid rgba(26,24,22,0.08); text-align: center; }
+  .jx-pillar:last-child { border-right: none; }
+  .jx-pillar-title { font-size: 14px; font-weight: 500; margin: 0 0 4px; color: #1a1816; }
+  .jx-pillar-desc { font-size: 12.5px; color: #8f8a82; margin: 0; line-height: 1.45; }
+
+  /* SECTIONS */
+  .jx-section { padding: 96px 24px; }
+  .jx-section-alt { background: #efeae0; }
+  .jx-section-faq { background: #2d2823; color: #f7f4ed; }
+  .jx-section-inner { max-width: 960px; margin: 0 auto; }
+  .jx-eyebrow { font-size: 11px; color: #b8855a; text-transform: uppercase; letter-spacing: 0.16em; margin: 0 0 14px; font-weight: 500; }
+  .jx-h2 { font-size: 38px; font-weight: 500; margin: 0 0 16px; letter-spacing: -0.025em; line-height: 1.1; color: #1a1816; }
+  .jx-section-faq .jx-h2 { color: #f7f4ed; }
+  .jx-section-faq .jx-italic { color: #c9c2b6; }
+  .jx-section-sub { font-size: 16px; color: #6b6660; line-height: 1.6; max-width: 520px; margin: 0; }
+  .jx-section-faq .jx-section-sub { color: #a8a29a; }
+  .jx-center { text-align: center; }
+  .jx-center .jx-section-sub { margin-left: auto; margin-right: auto; }
+
+  /* PAGE HEADER (smaller hero for sub-pages) */
+  .jx-pageheader { padding: 80px 24px 48px; text-align: center; background: #f7f4ed; }
+  .jx-pageheader .jx-h1 { font-size: 44px; margin-bottom: 14px; }
+  .jx-pageheader-sub { font-size: 16px; color: #6b6660; max-width: 520px; margin: 0 auto; line-height: 1.55; }
+
+  /* OVER */
+  .jx-about-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
+  .jx-about-text p { font-size: 15.5px; color: #4a4640; line-height: 1.75; margin: 0 0 16px; }
+  .jx-about-text p:last-child { margin-bottom: 0; }
+  .jx-founders { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .jx-founder { background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.08); border-radius: 12px; padding: 20px; transition: transform .2s, border-color .2s; }
+  .jx-founder:hover { transform: translateY(-2px); border-color: rgba(26,24,22,0.22); }
+  .jx-founder-row { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .jx-avatar { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px; flex-shrink: 0; }
+  .jx-av-j { background: #e8dcc8; color: #6b4a2a; }
+  .jx-av-s { background: #d8d4c5; color: #4a4640; }
+  .jx-founder-name { font-weight: 500; font-size: 14.5px; margin: 0; color: #1a1816; }
+  .jx-founder-role { font-size: 12.5px; color: #8f8a82; margin: 2px 0 0; }
+  .jx-founder-bio { font-size: 13px; color: #6b6660; line-height: 1.55; margin: 0; }
+
+  /* OVER - extended values */
+  .jx-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 48px; }
+  .jx-value { background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.08); border-radius: 12px; padding: 24px; text-align: left; }
+  .jx-value-title { font-size: 15px; font-weight: 500; margin: 0 0 8px; color: #1a1816; }
+  .jx-value-desc { font-size: 13.5px; color: #6b6660; line-height: 1.55; margin: 0; }
+
+  /* DIENSTEN */
+  .jx-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 48px; }
+  .jx-svc { background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.08); border-radius: 12px; padding: 24px; transition: transform .2s, border-color .2s; cursor: pointer; text-align: left; }
+  .jx-svc:hover { transform: translateY(-3px); border-color: rgba(26,24,22,0.28); }
+  .jx-svc-icon { width: 36px; height: 36px; background: #efeae0; border-radius: 8px; margin-bottom: 18px; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+  .jx-svc:hover .jx-svc-icon { background: #1a1816; }
+  .jx-svc:hover .jx-svc-icon svg { stroke: #f7f4ed; }
+  .jx-svc-icon svg { transition: stroke .2s; stroke: #4a4640; }
+  .jx-svc-title { font-size: 15.5px; font-weight: 500; margin: 0 0 8px; color: #1a1816; }
+  .jx-svc-desc { font-size: 13.5px; color: #6b6660; line-height: 1.55; margin: 0; }
+
+  /* PROCES */
+  .jx-process { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 48px; }
+  .jx-step { background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.08); border-radius: 12px; padding: 24px; text-align: left; }
+  .jx-step-num { font-size: 11px; color: #b8855a; font-weight: 500; letter-spacing: 0.12em; margin: 0 0 28px; }
+  .jx-step-title { font-size: 15px; font-weight: 500; margin: 0 0 6px; color: #1a1816; }
+  .jx-step-desc { font-size: 13px; color: #6b6660; line-height: 1.55; margin: 0; }
+
+  /* PRIJZEN */
+  .jx-pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 48px; }
+  .jx-price { background: #fffdf8; border: 0.5px solid rgba(26,24,22,0.08); border-radius: 14px; padding: 28px 24px; transition: transform .2s; position: relative; text-align: left; }
+  .jx-price:hover { transform: translateY(-3px); }
+  .jx-price-featured { border: 1.5px solid #1a1816; }
+  .jx-price-badge { position: absolute; top: -11px; left: 50%; transform: translateX(-50%); background: #1a1816; color: #f7f4ed; padding: 4px 12px; border-radius: 100px; font-size: 11px; font-weight: 500; letter-spacing: 0.02em; white-space: nowrap; }
+  .jx-price-name { font-size: 13px; color: #8f8a82; margin: 0 0 10px; font-weight: 500; }
+  .jx-price-amount { font-size: 34px; font-weight: 500; margin: 0; letter-spacing: -0.03em; line-height: 1; color: #1a1816; }
+  .jx-price-period { font-size: 12px; color: #8f8a82; margin: 6px 0 22px; }
+  .jx-price-list { list-style: none; padding: 0; margin: 0 0 24px; font-size: 13.5px; color: #4a4640; }
+  .jx-price-list li { padding: 8px 0; border-bottom: 0.5px solid rgba(26,24,22,0.06); display: flex; align-items: flex-start; gap: 8px; }
+  .jx-price-list li:last-child { border-bottom: none; }
+  .jx-check { color: #b8855a; flex-shrink: 0; margin-top: 1px; }
+  .jx-price-btn { display: block; text-align: center; padding: 11px; border-radius: 7px; font-size: 13.5px; font-weight: 500; transition: all .15s; cursor: pointer; border: none; width: 100%; }
+  .jx-price-btn-ghost { background: transparent; color: #1a1816; border: 0.5px solid rgba(26,24,22,0.18); }
+  .jx-price-btn-ghost:hover { border-color: rgba(26,24,22,0.5); background: rgba(26,24,22,0.03); }
+  .jx-price-btn-solid { background: #1a1816; color: #f7f4ed; }
+  .jx-price-btn-solid:hover { background: #2d2823; }
+  .jx-launch-note { margin-top: 28px; font-size: 13px; color: #6b6660; text-align: center; }
+  .jx-launch-strong { color: #b8855a; font-weight: 500; }
+
+  /* FAQ — donker thema */
+  .jx-faq { max-width: 680px; margin: 48px auto 0; text-align: left; }
+  .jx-faq-item { border-bottom: 0.5px solid rgba(247,244,237,0.12); }
+  .jx-faq-q { width: 100%; background: none; border: none; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; font-size: 15.5px; font-weight: 500; color: #f7f4ed; cursor: pointer; text-align: left; gap: 16px; }
+  .jx-faq-icon { font-size: 22px; color: #8f8a82; transition: transform .2s, color .2s; line-height: 1; flex-shrink: 0; }
+  .jx-faq-item.open .jx-faq-icon { transform: rotate(45deg); color: #b8855a; }
+  .jx-faq-a { max-height: 0; overflow: hidden; transition: max-height .25s ease, padding .25s ease; font-size: 14.5px; color: #c9c2b6; line-height: 1.65; padding: 0; }
+  .jx-faq-item.open .jx-faq-a { max-height: 320px; padding: 0 0 22px; }
+
+  /* CONTACT */
+  .jx-contact-card { background: #1a1816; border-radius: 16px; padding: 56px 36px; color: #f7f4ed; text-align: center; max-width: 720px; margin: 0 auto; position: relative; overflow: hidden; }
+  .jx-contact-card::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(247,244,237,0.04) 1px, transparent 1px); background-size: 22px 22px; mask-image: radial-gradient(ellipse 60% 50% at top, black 0%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at top, black 0%, transparent 70%); pointer-events: none; }
+  .jx-contact-card > * { position: relative; }
+  .jx-contact-card .jx-eyebrow { color: #b8855a; }
+  .jx-contact-card .jx-h2 { color: #f7f4ed; margin-bottom: 14px; }
+  .jx-contact-card .jx-italic { color: #c9c2b6; }
+  .jx-contact-sub { color: #a8a29a; font-size: 16px; margin: 0 0 32px; line-height: 1.55; }
+  .jx-contact-info { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 28px; max-width: 460px; margin-left: auto; margin-right: auto; }
+  .jx-contact-tile { background: rgba(247,244,237,0.05); border: 0.5px solid rgba(247,244,237,0.12); padding: 16px; border-radius: 10px; text-align: left; transition: background .15s; display: block; }
+  .jx-contact-tile:hover { background: rgba(247,244,237,0.1); }
+  .jx-contact-label { font-size: 11px; color: #8f8a82; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .jx-contact-val { font-size: 14.5px; font-weight: 500; margin: 0; color: #f7f4ed; word-break: break-all; }
+  .jx-form { max-width: 480px; margin: 28px auto 0; text-align: left; }
+  .jx-form-row { margin-bottom: 12px; }
+  .jx-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .jx-input, .jx-textarea { width: 100%; padding: 12px 14px; background: rgba(247,244,237,0.05); border: 0.5px solid rgba(247,244,237,0.15); border-radius: 8px; color: #f7f4ed; font-size: 14px; font-family: inherit; transition: border-color .15s, background .15s; }
+  .jx-input::placeholder, .jx-textarea::placeholder { color: #8f8a82; }
+  .jx-input:focus, .jx-textarea:focus { outline: none; border-color: rgba(184,133,90,0.6); background: rgba(247,244,237,0.08); }
+  .jx-textarea { min-height: 96px; resize: vertical; }
+  .jx-submit { width: 100%; background: #f7f4ed; color: #1a1816; padding: 13px; border-radius: 8px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: transform .15s, background .15s; }
+  .jx-submit:hover { transform: translateY(-1px); background: #fffdf8; }
+  .jx-form-success { display: none; background: rgba(184,133,90,0.15); border: 0.5px solid rgba(184,133,90,0.4); padding: 14px; border-radius: 8px; color: #e8dcc8; font-size: 14px; margin-top: 12px; text-align: center; }
+  .jx-form-success.show { display: block; animation: fadeIn .3s; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* FOOTER */
+  .jx-footer { padding: 32px 24px; border-top: 0.5px solid rgba(26,24,22,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: #8f8a82; flex-wrap: wrap; gap: 12px; background: #f7f4ed; }
+  .jx-footer-links { display: flex; gap: 18px; }
+  .jx-footer-links span { transition: color .15s; cursor: pointer; }
+  .jx-footer-links span:hover { color: #1a1816; }
+
+  /* RESPONSIVE */
+  @media (max-width: 880px) {
+    .jx-services-grid, .jx-values { grid-template-columns: repeat(2, 1fr); }
+    .jx-process { grid-template-columns: repeat(2, 1fr); }
+    .jx-pricing-grid { grid-template-columns: 1fr; max-width: 420px; margin-left: auto; margin-right: auto; }
+    .jx-about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .jx-h1 { font-size: 44px; }
+    .jx-pageheader .jx-h1 { font-size: 36px; }
+  }
+  @media (max-width: 600px) {
+    .jx-nav { padding: 12px 18px; }
+    .jx-navlinks { display: none; }
+    .jx-burger { display: block; }
+    .jx-hero { padding: 64px 18px 56px; }
+    .jx-pageheader { padding: 56px 18px 36px; }
+    .jx-h1 { font-size: 34px; letter-spacing: -0.03em; }
+    .jx-pageheader .jx-h1 { font-size: 30px; }
+    .jx-sub { font-size: 15.5px; }
+    .jx-section { padding: 64px 18px; }
+    .jx-h2 { font-size: 28px; }
+    .jx-section-sub { font-size: 14.5px; }
+    .jx-services-grid, .jx-values, .jx-process, .jx-founders { grid-template-columns: 1fr; }
+    .jx-pillars { grid-template-columns: 1fr; gap: 0; padding-top: 0; margin-top: 48px; }
+    .jx-pillar { border-right: none; border-bottom: 0.5px solid rgba(26,24,22,0.08); padding: 18px 0; }
+    .jx-pillar:last-child { border-bottom: none; }
+    .jx-contact-card { padding: 40px 22px; border-radius: 14px; }
+    .jx-form-grid { grid-template-columns: 1fr; }
+    .jx-hero-actions { flex-direction: column; align-items: stretch; }
+    .jx-btn-primary, .jx-btn-ghost { justify-content: center; }
+    .jx-footer { flex-direction: column; text-align: center; }
+  }
+</style>
+
+<div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1rem; margin: 1rem 0;">
+<div class="jx">
+
+  <nav class="jx-nav">
+    <div class="jx-logo" data-page="home">
+      <span class="jx-logo-mark">J</span>
+      <span>Jaxsen</span>
+    </div>
+    <div class="jx-navlinks">
+      <span class="jx-navlink" data-page="home">Home</span>
+      <span class="jx-navlink" data-page="diensten">Diensten</span>
+      <span class="jx-navlink" data-page="over">Over ons</span>
+      <span class="jx-navlink" data-page="prijzen">Prijzen</span>
+      <span class="jx-navlink" data-page="contact">Contact</span>
+    </div>
+    <button class="jx-cta" data-page="contact">
+      Neem contact op
+      <svg class="jx-cta-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </button>
+    <button class="jx-burger" id="jx-burger" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a1816" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </nav>
+  <div class="jx-mobile-menu" id="jx-mobile-menu">
+    <span class="jx-navlink" data-page="home">Home</span>
+    <span class="jx-navlink" data-page="diensten">Diensten</span>
+    <span class="jx-navlink" data-page="over">Over ons</span>
+    <span class="jx-navlink" data-page="prijzen">Prijzen</span>
+    <span class="jx-navlink" data-page="contact">Contact</span>
+  </div>
+
+  <!-- HOME -->
+  <div class="jx-page active" data-pagecontent="home">
+    <section class="jx-hero">
+      <div class="jx-hero-inner">
+        <div class="jx-badge">
+          <span class="jx-badge-dot"></span>
+          Net begonnen — eerste klanten welkom
+        </div>
+        <h1 class="jx-h1">Strakke websites voor<br/>lokale ondernemers, <span class="jx-italic">zonder gedoe</span></h1>
+        <p class="jx-sub">Wij zijn Jack &amp; Senna. Twee jongens, één missie: jouw bedrijf online net zo professioneel laten zien als je dat in het echt bent.</p>
+        <div class="jx-hero-actions">
+          <button class="jx-btn-primary" data-page="contact">
+            Plan een gratis gesprek
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+          <button class="jx-btn-ghost" data-page="diensten">Bekijk wat we doen</button>
+        </div>
+        <div class="jx-pillars">
+          <div class="jx-pillar"><p class="jx-pillar-title">Persoonlijk</p><p class="jx-pillar-desc">Direct contact met de makers</p></div>
+          <div class="jx-pillar"><p class="jx-pillar-title">Eerlijke prijs</p><p class="jx-pillar-desc">Geen verborgen kosten</p></div>
+          <div class="jx-pillar"><p class="jx-pillar-title">Snel online</p><p class="jx-pillar-desc">Binnen enkele weken klaar</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="jx-section jx-section-alt">
+      <div class="jx-section-inner jx-center">
+        <p class="jx-eyebrow">Hoe het werkt</p>
+        <h2 class="jx-h2">Van idee tot <span class="jx-italic">live website</span></h2>
+        <p class="jx-section-sub">Een duidelijk proces in vier stappen — geen verrassingen, altijd op de hoogte.</p>
+        <div class="jx-process">
+          <div class="jx-step"><p class="jx-step-num">STAP 01</p><p class="jx-step-title">Kennismaking</p><p class="jx-step-desc">Gratis gesprek over jouw bedrijf en wensen.</p></div>
+          <div class="jx-step"><p class="jx-step-num">STAP 02</p><p class="jx-step-title">Ontwerp</p><p class="jx-step-desc">Wij maken een voorstel dat past bij jouw merk.</p></div>
+          <div class="jx-step"><p class="jx-step-num">STAP 03</p><p class="jx-step-title">Bouw</p><p class="jx-step-desc">Senna bouwt de site, jij ziet de voortgang mee.</p></div>
+          <div class="jx-step"><p class="jx-step-num">STAP 04</p><p class="jx-step-title">Live</p><p class="jx-step-desc">Wij zetten 'm online en helpen je op weg.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="jx-section jx-section-faq">
+      <div class="jx-section-inner jx-center">
+        <p class="jx-eyebrow">Veelgestelde vragen</p>
+        <h2 class="jx-h2">Vragen die <span class="jx-italic">vaak terugkomen</span></h2>
+        <div class="jx-faq">
+          <div class="jx-faq-item"><button class="jx-faq-q">Hoe lang duurt het bouwen van een website?<span class="jx-faq-icon">+</span></button><div class="jx-faq-a">Een Starter-site staat meestal binnen 1 à 2 weken online. Een Business-site duurt gemiddeld 3 tot 4 weken. Voor een webshop houden we 4 tot 6 weken aan.</div></div>
+          <div class="jx-faq-item"><button class="jx-faq-q">Wat als ik geen teksten of foto's heb?<span class="jx-faq-icon">+</span></button><div class="jx-faq-a">Geen probleem — wij helpen met het schrijven van teksten en kunnen professionele foto's regelen. We bespreken dit in het kennismakingsgesprek.</div></div>
+          <div class="jx-faq-item"><button class="jx-faq-q">Kan ik zelf de website later aanpassen?<span class="jx-faq-icon">+</span></button><div class="jx-faq-a">Ja, je krijgt een eenvoudig beheerpaneel waarmee je teksten, afbeeldingen en producten zelf kunt aanpassen. We geven je een korte uitleg en blijven bereikbaar voor vragen.</div></div>
+          <div class="jx-faq-item"><button class="jx-faq-q">Wat zijn de kosten na het eerste jaar?<span class="jx-faq-icon">+</span></button><div class="jx-faq-a">Na het eerste jaar reken je hosting en domein, ongeveer €120 per jaar. Optioneel bieden we een onderhoudspakket vanaf €25 per maand voor updates, back-ups en kleine wijzigingen.</div></div>
+          <div class="jx-faq-item"><button class="jx-faq-q">Werken jullie alleen lokaal?<span class="jx-faq-icon">+</span></button><div class="jx-faq-a">We zijn gespecialiseerd in lokale bedrijven, maar werken voor klanten uit heel Nederland. Persoonlijk contact gaat ook prima online.</div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- DIENSTEN -->
+  <div class="jx-page" data-pagecontent="diensten">
+    <section class="jx-pageheader">
+      <p class="jx-eyebrow">Diensten</p>
+      <h1 class="jx-h1">Wat wij <span class="jx-italic">voor je maken</span></h1>
+      <p class="jx-pageheader-sub">Van een simpele bedrijfssite tot een complete webshop — wij regelen het van A tot Z.</p>
+    </section>
+    <section class="jx-section" style="padding-top: 24px;">
+      <div class="jx-section-inner">
+        <div class="jx-services-grid" style="margin-top: 0;">
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></div><h3 class="jx-svc-title">Bedrijfssite</h3><p class="jx-svc-desc">Een professionele website die laat zien wie je bent en wat je doet.</p></div>
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg></div><h3 class="jx-svc-title">Webshop</h3><p class="jx-svc-desc">Verkoop online met een shop die makkelijk te beheren is.</p></div>
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><h3 class="jx-svc-title">Restyling</h3><p class="jx-svc-desc">Een verouderde site die een frisse, moderne update verdient.</p></div>
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div><h3 class="jx-svc-title">SEO &amp; vindbaarheid</h3><p class="jx-svc-desc">Zorgen dat klanten je vinden via Google, ook lokaal in de buurt.</p></div>
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3 class="jx-svc-title">Onderhoud</h3><p class="jx-svc-desc">Updates, back-ups en kleine aanpassingen — wij houden alles draaiend.</p></div>
+          <div class="jx-svc"><div class="jx-svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><h3 class="jx-svc-title">Logo &amp; huisstijl</h3><p class="jx-svc-desc">Een herkenbaar logo en kleurenpalet dat past bij jouw merk.</p></div>
+        </div>
+        <div style="text-align: center; margin-top: 56px;">
+          <button class="jx-btn-primary" data-page="contact">Vraag vrijblijvend een offerte aan
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- OVER ONS -->
+  <div class="jx-page" data-pagecontent="over">
+    <section class="jx-pageheader">
+      <p class="jx-eyebrow">Over Jaxsen</p>
+      <h1 class="jx-h1">Twee jongens, <span class="jx-italic">één missie</span></h1>
+      <p class="jx-pageheader-sub">Wij zijn Jack en Senna — leer ons even kennen.</p>
+    </section>
+    <section class="jx-section" style="padding-top: 24px;">
+      <div class="jx-section-inner">
+        <div class="jx-about-grid">
+          <div class="jx-about-text">
+            <p>Jaxsen is opgericht door Jack en Senna. We zagen om ons heen dat veel lokale ondernemers worstelen met hun online aanwezigheid: dure bureaus, ingewikkelde sites, niemand die echt luistert.</p>
+            <p>Daarom doen wij het anders. Korte lijntjes, eerlijke prijzen, en een site waar jij trots op bent. Geen middlemen, geen gedoe — gewoon goed werk.</p>
+            <p>We zijn net begonnen, maar wat we missen aan jaren ervaring maken we dubbel goed met inzet, oog voor detail en de wil om elke klant blij te maken.</p>
+          </div>
+          <div class="jx-founders">
+            <div class="jx-founder"><div class="jx-founder-row"><div class="jx-avatar jx-av-j">J</div><div><p class="jx-founder-name">Jack</p><p class="jx-founder-role">Design &amp; klantcontact</p></div></div><p class="jx-founder-bio">Zorgt dat alles er strak uitziet en dat jij weet wat er gebeurt.</p></div>
+            <div class="jx-founder"><div class="jx-founder-row"><div class="jx-avatar jx-av-s">S</div><div><p class="jx-founder-name">Senna</p><p class="jx-founder-role">Development &amp; techniek</p></div></div><p class="jx-founder-bio">Bouwt onder de motorkap — snel, veilig en goed vindbaar.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="jx-section jx-section-alt" style="padding-top: 56px;">
+      <div class="jx-section-inner jx-center">
+        <p class="jx-eyebrow">Onze waarden</p>
+        <h2 class="jx-h2">Waar wij <span class="jx-italic">voor staan</span></h2>
+        <div class="jx-values">
+          <div class="jx-value"><p class="jx-value-title">Eerlijk</p><p class="jx-value-desc">Geen verborgen kosten, geen mooie praatjes. Wat we afspreken, dat doen we.</p></div>
+          <div class="jx-value"><p class="jx-value-title">Persoonlijk</p><p class="jx-value-desc">Je praat altijd direct met ons — geen accountmanager, geen wachttijd.</p></div>
+          <div class="jx-value"><p class="jx-value-title">Lokaal</p><p class="jx-value-desc">We snappen lokale ondernemers omdat we er zelf middenin staan.</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- PRIJZEN -->
+  <div class="jx-page" data-pagecontent="prijzen">
+    <section class="jx-pageheader">
+      <p class="jx-eyebrow">Prijzen</p>
+      <h1 class="jx-h1">Eerlijk en <span class="jx-italic">duidelijk</span></h1>
+      <p class="jx-pageheader-sub">Geen verborgen kosten. Kies wat past bij jouw bedrijf.</p>
+    </section>
+    <section class="jx-section" style="padding-top: 24px;">
+      <div class="jx-section-inner">
+        <div class="jx-pricing-grid" style="margin-top: 0;">
+          <div class="jx-price">
+            <p class="jx-price-name">Starter</p>
+            <p class="jx-price-amount">€499</p>
+            <p class="jx-price-period">eenmalig</p>
+            <ul class="jx-price-list">
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Eén pagina (one-pager)</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Mobielvriendelijk</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Contactformulier</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Hosting eerste jaar</li>
+            </ul>
+            <button class="jx-price-btn jx-price-btn-ghost" data-page="contact">Kies Starter</button>
+          </div>
+          <div class="jx-price jx-price-featured">
+            <span class="jx-price-badge">Meest gekozen</span>
+            <p class="jx-price-name">Business</p>
+            <p class="jx-price-amount">€999</p>
+            <p class="jx-price-period">eenmalig</p>
+            <ul class="jx-price-list">
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Tot 5 pagina's</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Volledig op maat</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>SEO-basis</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Hosting eerste jaar</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>2 maanden support</li>
+            </ul>
+            <button class="jx-price-btn jx-price-btn-solid" data-page="contact">Kies Business</button>
+          </div>
+          <div class="jx-price">
+            <p class="jx-price-name">Webshop</p>
+            <p class="jx-price-amount">€1.499</p>
+            <p class="jx-price-period">vanaf, op maat</p>
+            <ul class="jx-price-list">
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Volledige webshop</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Online betalingen</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Productbeheer</li>
+              <li><svg class="jx-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>Training inbegrepen</li>
+            </ul>
+            <button class="jx-price-btn jx-price-btn-ghost" data-page="contact">Vraag offerte</button>
+          </div>
+        </div>
+        <p class="jx-launch-note">Speciale launch-aanbieding: <span class="jx-launch-strong">10% korting</span> voor onze eerste vijf klanten.</p>
+      </div>
+    </section>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="jx-page" data-pagecontent="contact">
+    <section class="jx-pageheader">
+      <p class="jx-eyebrow">Contact</p>
+      <h1 class="jx-h1">Klaar om te <span class="jx-italic">starten?</span></h1>
+      <p class="jx-pageheader-sub">Stuur een berichtje of mail ons gerust. We reageren altijd binnen 24 uur.</p>
+    </section>
+    <section class="jx-section" style="padding-top: 24px;">
+      <div class="jx-contact-card">
+        <div class="jx-contact-info">
+          <a href="mailto:jaxsendesign@outlook.com" class="jx-contact-tile">
+            <p class="jx-contact-label">E-mail</p>
+            <p class="jx-contact-val">jaxsendesign@outlook.com</p>
+          </a>
+        </div>
+        <form class="jx-form" id="jx-form">
+          <div class="jx-form-grid">
+            <input class="jx-input" type="text" placeholder="Je naam" required name="name"/>
+            <input class="jx-input" type="email" placeholder="E-mailadres" required name="email"/>
+          </div>
+          <div class="jx-form-row">
+            <textarea class="jx-textarea" placeholder="Vertel kort over je project of vraag..." required name="msg"></textarea>
+          </div>
+          <button type="submit" class="jx-submit">Verstuur bericht</button>
+          <div class="jx-form-success" id="jx-success">✓ Bedankt! We nemen zo snel mogelijk contact met je op.</div>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <footer class="jx-footer">
+    <span>© 2026 Jaxsen — Jack &amp; Senna</span>
+    <div class="jx-footer-links">
+      <span data-page="over">Over</span>
+      <span data-page="diensten">Diensten</span>
+      <span data-page="contact">Contact</span>
+    </div>
+  </footer>
+
+</div>
+</div>
+
+<script>
+(function() {
+  function showPage(name) {
+    document.querySelectorAll('[data-pagecontent]').forEach(function(p) {
+      p.classList.toggle('active', p.getAttribute('data-pagecontent') === name);
+    });
+    document.querySelectorAll('.jx-navlink').forEach(function(l) {
+      l.classList.toggle('active', l.getAttribute('data-page') === name);
+    });
+    var menu = document.getElementById('jx-mobile-menu');
+    if (menu) menu.classList.remove('open');
+    var jx = document.querySelector('.jx');
+    if (jx) jx.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.querySelectorAll('[data-page]').forEach(function(el) {
+    el.addEventListener('click', function(e) {
+      e.preventDefault();
+      showPage(el.getAttribute('data-page'));
+    });
+  });
+
+  var burger = document.getElementById('jx-burger');
+  var mobileMenu = document.getElementById('jx-mobile-menu');
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', function() {
+      mobileMenu.classList.toggle('open');
+    });
+  }
+
+  document.querySelectorAll('.jx-faq-q').forEach(function(q) {
+    q.addEventListener('click', function() {
+      q.parentElement.classList.toggle('open');
+    });
+  });
+
+  var form = document.getElementById('jx-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var success = document.getElementById('jx-success');
+      success.classList.add('show');
+      form.reset();
+      setTimeout(function() { success.classList.remove('show'); }, 5000);
+    });
+  }
+})();
+</script>
